@@ -1,0 +1,9 @@
+.git
+**/node_modules
+**/dist
+**/target
+infra/certs
+infra/keys
+backups
+*.env
+!*.env.example

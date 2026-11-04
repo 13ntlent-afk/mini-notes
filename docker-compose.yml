@@ -1,0 +1,123 @@
+services:
+  edge:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${EDGE_HTTP_PORT:-80}:80"
+    volumes:
+      - ./infra/edge/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/edge/conf.d:/etc/nginx/conf.d:ro
+      - ./infra/edge/snippets:/etc/nginx/snippets:ro
+      - ./infra/certs:/etc/nginx/certs:ro
+    depends_on:
+      - web
+      - gateway
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Dockerfile
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:8081
+      NOTES_SERVICE_URL: http://notes-service:8082
+      CONTACT_SERVICE_URL: http://contact-service:8083
+    restart: unless-stopped
+    depends_on:
+      - auth-service
+      - notes-service
+      - contact-service
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    env_file:
+      - ./env/auth-service.env
+    environment:
+      SERVER_PORT: 8081
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}?currentSchema=auth
+      SPRING_DATASOURCE_USERNAME: auth_login
+      SPRING_DATASOURCE_PASSWORD: ${AUTH_DB_PASSWORD:?Set AUTH_DB_PASSWORD in .env}
+      DB_SCHEMA: auth
+      JWT_ISSUER: ${JWT_ISSUER:?Set JWT_ISSUER in .env}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:?Set JWT_AUDIENCE in .env}
+      JWT_KID: ${JWT_KID:-}
+      JWT_PRIVATE_KEY_PATH: ${JWT_PRIVATE_KEY_PATH:-/run/keys/private.pem}
+      JWT_PUBLIC_KEY_PATH: ${JWT_PUBLIC_KEY_PATH:-/run/keys/public.pem}
+      ADMIN_BOOTSTRAP_USERNAME: ${ADMIN_BOOTSTRAP_USERNAME:-}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-}
+    volumes:
+      - ./infra/keys:/run/keys:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  notes-service:
+    build:
+      context: .
+      dockerfile: services/notes-service/Dockerfile
+    env_file:
+      - ./env/notes-service.env
+    environment:
+      SERVER_PORT: 8082
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}?currentSchema=notes
+      SPRING_DATASOURCE_USERNAME: notes_login
+      SPRING_DATASOURCE_PASSWORD: ${NOTES_DB_PASSWORD:?Set NOTES_DB_PASSWORD in .env}
+      DB_SCHEMA: notes
+      JWKS_URI: http://auth-service:8081/.well-known/jwks.json
+      JWT_ISSUER: ${JWT_ISSUER:?Set JWT_ISSUER in .env}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:?Set JWT_AUDIENCE in .env}
+    depends_on:
+      db:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    restart: unless-stopped
+  contact-service:
+    build:
+      context: .
+      dockerfile: services/contact-service/Dockerfile
+    env_file:
+      - ./env/contact-service.env
+    environment:
+      SERVER_PORT: 8083
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}?currentSchema=contact
+      SPRING_DATASOURCE_USERNAME: contact_login
+      SPRING_DATASOURCE_PASSWORD: ${CONTACT_DB_PASSWORD:?Set CONTACT_DB_PASSWORD in .env}
+      DB_SCHEMA: contact
+      JWKS_URI: http://auth-service:8081/.well-known/jwks.json
+      JWT_ISSUER: ${JWT_ISSUER:?Set JWT_ISSUER in .env}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:?Set JWT_AUDIENCE in .env}
+    depends_on:
+      db:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    restart: unless-stopped
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:?Set AUTH_DB_PASSWORD in .env}
+      NOTES_DB_PASSWORD: ${NOTES_DB_PASSWORD:?Set NOTES_DB_PASSWORD in .env}
+      CONTACT_DB_PASSWORD: ${CONTACT_DB_PASSWORD:?Set CONTACT_DB_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:

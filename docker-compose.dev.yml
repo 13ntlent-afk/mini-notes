@@ -1,0 +1,45 @@
+services:
+  auth-service:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JWT_KID: ""
+      JWT_PRIVATE_KEY_PATH: ""
+      JWT_PUBLIC_KEY_PATH: ""
+  notes-service:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+  contact-service:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+  gateway:
+    environment:
+      SESSION_COOKIE_SECURE: "false"
+  edge:
+    ports: !override
+      - "127.0.0.1:8080:80"
+      - "127.0.0.1:8443:443"
+  gateway:
+    ports:
+      - "127.0.0.1:8081:8080"
+  auth-service:
+    ports:
+      - "127.0.0.1:8181:8081"
+  notes-service:
+    ports:
+      - "127.0.0.1:8182:8082"
+  contact-service:
+    ports:
+      - "127.0.0.1:8183:8083"
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4:9
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?Set PGADMIN_DEFAULT_EMAIL in .env}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?Set PGADMIN_DEFAULT_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on:
+      db:
+        condition: service_healthy

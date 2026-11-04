@@ -1,0 +1,13 @@
+*.env
+!*.env.example
+infra/certs/
+infra/keys/
+target/
+node_modules/
+dist/
+.idea/
+.vscode/
+*.log
+.DS_Store
+backups/
+  

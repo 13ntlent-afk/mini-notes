@@ -1,0 +1,45 @@
+openapi: 3.1.0
+info:
+  title: Mini Notes Contact API
+  version: 0.1.0
+servers:
+  - url: /api/contact
+paths:
+  /:
+    post:
+      summary: Submit a contact message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageInput'
+      responses:
+        '200':
+          description: Message accepted
+        '400':
+          description: Invalid submission
+  /admin/messages:
+    get:
+      summary: Read the development admin inbox
+      security:
+        - AdminToken: []
+      responses:
+        '200':
+          description: Contact messages
+        '401':
+          description: Admin token is missing or invalid
+components:
+  securitySchemes:
+    AdminToken:
+      type: apiKey
+      in: header
+      name: X-Admin-Token
+  schemas:
+    MessageInput:
+      type: object
+      required: [name, email, message]
+      properties:
+        name: { type: string, maxLength: 120 }
+        email: { type: string, format: email }
+        message: { type: string, maxLength: 5000 }

@@ -1,0 +1,14 @@
+server {
+    include /etc/nginx/snippets/tls.conf;
+    server_name localhost;
+
+    location /api/ {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_pass http://gateway:8080;
+    }
+
+    location / {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_pass http://web:80;
+    }
+}

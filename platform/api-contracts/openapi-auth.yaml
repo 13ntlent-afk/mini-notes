@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: Mini Notes Auth API
+  version: 0.1.0
+servers:
+  - url: /api/auth
+paths:
+  /users:
+    post:
+      summary: Register a development user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: User created
+        '400':
+          description: Invalid username or password
+        '409':
+          description: Username already exists
+  /token:
+    post:
+      summary: Issue a signed access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: Bearer token
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [access_token, token_type, expires_in]
+                properties:
+                  access_token: { type: string }
+                  token_type: { type: string, const: Bearer }
+                  expires_in: { type: integer }
+        '401':
+          description: Invalid credentials
+  /.well-known/jwks.json:
+    get:
+      summary: Return the public signing key set
+      responses:
+        '200':
+          description: JSON Web Key Set
+components:
+  schemas:
+    Credentials:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string, minLength: 1 }
+        password: { type: string, minLength: 12 }
