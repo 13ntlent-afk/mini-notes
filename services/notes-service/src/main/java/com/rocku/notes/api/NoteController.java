@@ -6,7 +6,6 @@ import com.rocku.notes.domain.NoteService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -65,6 +64,6 @@ public class NoteController {
     }
 
     private Long userId(Jwt jwt) {
-        return Long.fromString(jwt.getClaimAsString("uid"));
+        return Long.valueOf(jwt.getClaimAsString("uid"));
     }
 }

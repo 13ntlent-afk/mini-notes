@@ -2,26 +2,28 @@ package com.rocku.notes.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
-@Table(name = "notes", schema = "notes")
+@Table(name = "notes")
 public class Note {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(nullable = false, length = 160)
+    @Column(nullable = false, unique = true, length = 200)
     private String title;
 
-    @Column(nullable = false, length = 20000)
+    @Column(length = 10000)
     private String body;
 
     @Column(name = "created_at", nullable = false)
@@ -33,8 +35,7 @@ public class Note {
     protected Note() {
     }
 
-    public Note(Long id, Long userId, String title, String body) {
-        this.id = id;
+    public Note(Long userId, String title, String body) {
         this.userId = userId;
         this.title = title;
         this.body = body;

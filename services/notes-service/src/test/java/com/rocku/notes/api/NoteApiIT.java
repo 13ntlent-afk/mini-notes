@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,7 +42,9 @@ class NoteApiIT {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
-        registry.add("DB_SCHEMA", () -> "notes");
+        registry.add("DB_SCHEMA", () -> "public");
+        // No users table here, so let Hibernate build notes without the FK.
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
         registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> "http://127.0.0.1:1/.well-known/jwks.json");
         registry.add("app.security.issuer", () -> "https://auth.test");
         registry.add("app.security.audience", () -> "mini-notes-api");
@@ -51,8 +52,8 @@ class NoteApiIT {
 
     @Test
     void noteIsPersistedAndVisibleOnlyToItsOwner() throws Exception {
-        var ownerId = UUID.randomUUID();
-        var otherUserId = UUID.randomUUID();
+        var ownerId = 1L;
+        var otherUserId = 2L;
         var ownerJwt = jwt().jwt(token -> token.claim("uid", ownerId.toString())
                 .claim("scope", "notes:read notes:write"));
         var otherJwt = jwt().jwt(token -> token.claim("uid", otherUserId.toString())

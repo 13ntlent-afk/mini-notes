@@ -31,7 +31,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/contact", "/actuator/health", "/error").permitAll()
+                        // contact_messages.user_id is NOT NULL, so submissions need a signed-in user.
+                        .requestMatchers("/actuator/health", "/error").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt -> jwt
                         .decoder(jwtDecoder)

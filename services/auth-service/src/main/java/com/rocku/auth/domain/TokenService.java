@@ -94,5 +94,5 @@ public class TokenService {
     }
 
     public record TokenResponse(String accessToken, String tokenType, long expiresIn,
-            UUID userId, String username, List<String> roles) {}
+            Long userId, String username, List<String> roles) {}
 }

@@ -9,24 +9,27 @@ import org.springframework.stereotype.Component;
 public class AdminBootstrap implements ApplicationRunner {
     private final UserService userService;
     private final String username;
+    private final String email;
     private final String password;
 
     public AdminBootstrap(UserService userService,
             @Value("${ADMIN_BOOTSTRAP_USERNAME:}") String username,
+            @Value("${ADMIN_BOOTSTRAP_EMAIL:}") String email,
             @Value("${ADMIN_BOOTSTRAP_PASSWORD:}") String password) {
         this.userService = userService;
         this.username = username;
+        this.email = email;
         this.password = password;
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        if (username.isBlank() && password.isBlank()) {
+        if (username.isBlank() && email.isBlank() && password.isBlank()) {
             return;
         }
-        if (username.isBlank() || password.isBlank()) {
-            throw new IllegalStateException("Both admin bootstrap variables must be configured");
+        if (username.isBlank() || email.isBlank() || password.isBlank()) {
+            throw new IllegalStateException("All admin bootstrap variables must be configured");
         }
-        userService.ensureAdmin(username, password);
+        userService.ensureAdmin(username, email, password);
     }
 }

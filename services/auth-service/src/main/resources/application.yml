@@ -4,19 +4,18 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mininotes}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      # Schema is owned by the hand-written DDL scripts, not by Hibernate or Flyway.
+      ddl-auto: none
     properties:
-      hibernate.default_schema: ${DB_SCHEMA:auth}
+      hibernate.default_schema: ${DB_SCHEMA:public}
   flyway:
-    default-schema: ${DB_SCHEMA:auth}
-    schemas: ${DB_SCHEMA:auth}
-    locations: classpath:db/migration
+    enabled: ${FLYWAY_ENABLED:false}
 management:
   endpoints:
     web:

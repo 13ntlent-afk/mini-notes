@@ -2,43 +2,55 @@ package com.rocku.contact.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.util.UUID;
 
+// status is left to the DB default ('NEW'); it is not mapped.
 @Entity
-@Table(name = "contact_messages", schema = "contact")
+@Table(name = "contact_messages")
 public class ContactMessage {
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false, length = 120)
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(length = 100)
     private String name;
 
-    @Column(nullable = false, length = 254)
+    @Column(length = 255)
     private String email;
 
-    @Column(name = "message_body", nullable = false, length = 5000)
+    @Column(length = 150)
+    private String subject;
+
+    @Column(length = 5000)
     private String message;
 
-    @Column(name = "received_at", nullable = false)
-    private Instant receivedAt;
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
 
     protected ContactMessage() {
     }
 
-    public ContactMessage(String name, String email, String message) {
-        this.id = UUID.randomUUID();
+    public ContactMessage(Long userId, String name, String email, String subject, String message) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
+        this.subject = subject;
         this.message = message;
-        this.receivedAt = Instant.now();
+        this.createdAt = Instant.now();
     }
 
-    public UUID getId() { return id; }
+    public Long getId() { return id; }
+    public Long getUserId() { return userId; }
     public String getName() { return name; }
     public String getEmail() { return email; }
+    public String getSubject() { return subject; }
     public String getMessage() { return message; }
-    public Instant getReceivedAt() { return receivedAt; }
+    public Instant getCreatedAt() { return createdAt; }
 }

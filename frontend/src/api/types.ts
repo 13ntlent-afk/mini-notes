@@ -1,5 +1,5 @@
 export interface Note {
-  id: string;
+  id: number;
   title: string;
   body: string;
   createdAt: string;
@@ -7,9 +7,11 @@ export interface Note {
 }
 
 export interface ContactMessage {
-  id: string;
+  id: number;
+  userId: number;
   name: string;
   email: string;
+  subject: string | null;
   message: string;
-  receivedAt: string;
+  createdAt: string;
 }

@@ -8,6 +8,7 @@ export function RegisterPage() {
   const { login } = useSession();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -17,7 +18,7 @@ export function RegisterPage() {
     setBusy(true);
     setError('');
     try {
-      await request('/api/auth/register', { method: 'POST', body: JSON.stringify({ username, password }) });
+      await request('/api/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) });
       await login(username, password);
       navigate('/notes');
     } catch (issue) {
@@ -34,7 +35,8 @@ export function RegisterPage() {
         <h1>Make a little room.</h1><p className="auth-copy">Create an account for your notes.</p>
         <ErrorBanner message={error} />
         <form className="stack-form" onSubmit={submit}>
-          <label>Username<input autoComplete="username" minLength={3} maxLength={80} pattern="[A-Za-z0-9._-]+" value={username} onChange={(event) => setUsername(event.target.value)} required /></label>
+          <label>Username<input autoComplete="username" minLength={3} maxLength={50} pattern="[A-Za-z0-9._-]+" value={username} onChange={(event) => setUsername(event.target.value)} required /></label>
+          <label>Email<input type="email" autoComplete="email" maxLength={255} value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
           <label>Password<input type="password" autoComplete="new-password" minLength={12} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} required /><small>Use at least 12 characters.</small></label>
           <button className="primary-button" disabled={busy}>{busy ? 'Creating…' : 'Create account'}</button>
         </form>

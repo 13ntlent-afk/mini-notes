@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { ApiError, request } from '../api/client';
 
 export interface SessionUser {
-  id: string;
+  id: number;
   username: string;
   roles: string[];
 }

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import com.rocku.notes.persistence.NoteRepository;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,8 +22,8 @@ class NoteServiceTest {
 
     @Test
     void cannotReadNoteOwnedByAnotherUser() {
-        var noteId = UUID.randomUUID();
-        var userId = UUID.randomUUID();
+        var noteId = 10L;
+        var userId = 20L;
         when(noteRepository.findByIdAndUserId(noteId, userId)).thenReturn(Optional.empty());
 
         assertThrows(NoteNotFoundException.class, () -> noteService.findForUser(noteId, userId));

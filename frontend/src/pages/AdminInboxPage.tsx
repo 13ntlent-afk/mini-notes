@@ -16,7 +16,8 @@ function Inbox() {
   return <section className="inbox-page"><p className="eyebrow">ADMIN</p><h1>Contact inbox.</h1><ErrorBanner message={error} />
     {messages.length === 0 && !error ? <p className="empty-message">The inbox is clear.</p> : <div className="message-list">
       {messages.map((message) => <article className="message-row" key={message.id}>
-        <header><div><h2>{message.name}</h2><a href={`mailto:${message.email}`}>{message.email}</a></div><time>{new Date(message.receivedAt).toLocaleString()}</time></header>
+        <header><div><h2>{message.name}</h2><a href={`mailto:${message.email}`}>{message.email}</a></div><time>{new Date(message.createdAt).toLocaleString()}</time></header>
+        {message.subject && <h3>{message.subject}</h3>}
         <p>{message.message}</p>
       </article>)}
     </div>}

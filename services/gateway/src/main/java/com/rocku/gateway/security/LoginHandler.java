@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,12 +69,12 @@ public class LoginHandler {
     public record LoginRequest(@NotBlank @Size(max = 80) String username,
             @NotBlank @Size(max = 128) String password) {}
     public record Credentials(String username, String password) {}
-    public record UserView(UUID id, String username, List<String> roles) {}
+    public record UserView(Long id, String username, List<String> roles) {}
     public record TokenResult(
             @JsonProperty("accessToken") String accessToken,
             @JsonProperty("tokenType") String tokenType,
             @JsonProperty("expiresIn") long expiresIn,
-            @JsonProperty("userId") UUID userId,
+            @JsonProperty("userId") Long userId,
             @JsonProperty("username") String username,
             @JsonProperty("roles") List<String> roles) {}
 }

@@ -13,12 +13,14 @@ public class ContactService {
         this.repository = repository;
     }
 
-    public ContactMessage submit(String name, String email, String message) {
-        return repository.save(new ContactMessage(name.trim(), email.trim().toLowerCase(), message.trim()));
+    public ContactMessage submit(Long userId, String name, String email, String subject, String message) {
+        var trimmedSubject = subject == null || subject.isBlank() ? null : subject.trim();
+        return repository.save(new ContactMessage(userId, name.trim(), email.trim().toLowerCase(),
+                trimmedSubject, message.trim()));
     }
 
     @Transactional(readOnly = true)
     public List<ContactMessage> inbox() {
-        return repository.findAllByOrderByReceivedAtDesc();
+        return repository.findAllByOrderByCreatedAtDesc();
     }
 }

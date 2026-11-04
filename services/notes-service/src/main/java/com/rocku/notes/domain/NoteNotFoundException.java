@@ -1,9 +1,7 @@
 package com.rocku.notes.domain;
 
-import java.util.UUID;
-
 public class NoteNotFoundException extends RuntimeException {
-    public NoteNotFoundException(UUID id) {
+    public NoteNotFoundException(Long id) {
         super("Note not found: " + id);
     }
 }

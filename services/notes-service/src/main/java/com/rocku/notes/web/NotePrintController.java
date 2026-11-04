@@ -2,7 +2,6 @@ package com.rocku.notes.web;
 
 import com.rocku.notes.api.dto.NoteResponse;
 import com.rocku.notes.domain.NoteService;
-import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,8 +22,8 @@ public class NotePrintController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_notes:read')")
-    public String print(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt, Model model) {
-        var userId = UUID.fromString(jwt.getClaimAsString("uid"));
+    public String print(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt, Model model) {
+        var userId = Long.valueOf(jwt.getClaimAsString("uid"));
         model.addAttribute("note", NoteResponse.from(noteService.findForUser(id, userId)));
         return "print-note";
     }

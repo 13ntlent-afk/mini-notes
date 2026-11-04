@@ -4,19 +4,18 @@ spring:
   application:
     name: contact-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mininotes}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      # Schema is owned by the hand-written DDL scripts, not by Hibernate or Flyway.
+      ddl-auto: none
     properties:
-      hibernate.default_schema: ${DB_SCHEMA:contact}
+      hibernate.default_schema: ${DB_SCHEMA:public}
   flyway:
-    default-schema: ${DB_SCHEMA:contact}
-    schemas: ${DB_SCHEMA:contact}
-    locations: classpath:db/migration
+    enabled: ${FLYWAY_ENABLED:false}
   security:
     oauth2:
       resourceserver:

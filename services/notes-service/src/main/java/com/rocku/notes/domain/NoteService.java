@@ -2,7 +2,6 @@ package com.rocku.notes.domain;
 
 import com.rocku.notes.persistence.NoteRepository;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +26,7 @@ public class NoteService {
     }
 
     public Note create(Long userId, String title, String body) {
-        return noteRepository.save(new Note(Long.randomLong(), userId, title.trim(), body));
+        return noteRepository.save(new Note(userId, title.trim(), body));
     }
 
     public Note update(Long id, Long userId, String title, String body) {
