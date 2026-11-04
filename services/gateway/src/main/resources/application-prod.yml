@@ -1,0 +1,7 @@
+spring:
+  webflux:
+    session:
+      cookie:
+        secure: true
+server:
+  forward-headers-strategy: framework

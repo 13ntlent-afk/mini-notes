@@ -1,0 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS auth;
+
+CREATE TABLE auth.users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(80) NOT NULL UNIQUE,
+    password_hash VARCHAR(100) NOT NULL,
+    role VARCHAR(16) NOT NULL CHECK (role IN ('USER', 'ADMIN')),
+    created_at TIMESTAMPTZ NOT NULL
+);

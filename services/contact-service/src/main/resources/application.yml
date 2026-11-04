@@ -1,0 +1,33 @@
+server:
+  port: ${SERVER_PORT:8083}
+spring:
+  application:
+    name: contact-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: ${DB_SCHEMA:contact}
+  flyway:
+    default-schema: ${DB_SCHEMA:contact}
+    schemas: ${DB_SCHEMA:contact}
+    locations: classpath:db/migration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+app:
+  security:
+    issuer: ${JWT_ISSUER}
+    audience: ${JWT_AUDIENCE}

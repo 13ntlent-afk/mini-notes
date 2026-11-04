@@ -1,0 +1,3 @@
+app:
+  jwt:
+    allow-ephemeral-key: true

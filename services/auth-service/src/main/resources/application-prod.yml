@@ -1,0 +1,5 @@
+app:
+  jwt:
+    allow-ephemeral-key: false
+server:
+  forward-headers-strategy: framework

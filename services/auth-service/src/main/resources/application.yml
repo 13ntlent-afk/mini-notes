@@ -1,0 +1,33 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: ${DB_SCHEMA:auth}
+  flyway:
+    default-schema: ${DB_SCHEMA:auth}
+    schemas: ${DB_SCHEMA:auth}
+    locations: classpath:db/migration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+app:
+  jwt:
+    issuer: ${JWT_ISSUER}
+    audience: ${JWT_AUDIENCE}
+    key-id: ${JWT_KID:}
+    private-key-path: ${JWT_PRIVATE_KEY_PATH:}
+    public-key-path: ${JWT_PUBLIC_KEY_PATH:}
+    access-token-ttl: ${JWT_ACCESS_TOKEN_TTL:PT15M}
+    allow-ephemeral-key: false
