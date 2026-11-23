@@ -1,0 +1,205 @@
+╔════════════════════════════════════════════════════════════════╗
+║                 GIT PHASE WORKFLOW QUICK CARD                  ║
+║                  Mini-Notes Microservices                      ║
+╚════════════════════════════════════════════════════════════════╝
+
+THE RULE:
+  "One Git repo, meaningful commits per phase.
+   Tag each phase when its checkpoint passes (phase-1, phase-2, ...)"
+
+════════════════════════════════════════════════════════════════════
+
+THE PATTERN:
+
+  Commit → Commit → Commit → TAG PHASE ✓ → Next Phase
+   work1    work2    work3    (verified)   commit more...
+
+
+════════════════════════════════════════════════════════════════════
+
+DAILY COMMANDS:
+
+DURING PHASE:
+  git checkout -b phase-N-description     # Start phase
+  git add <files>
+  git commit -m "feat: [Phase-N] Description
+  
+  - Bullet 1
+  - Bullet 2"
+  
+  (Repeat 5-10 times per phase)
+
+
+WHEN PHASE IS DONE:
+  npm run lint                             # Verify
+  npm run test
+  npm run build
+  
+  git tag -a phase-N -m "Phase N Complete: Description
+  
+  Completed:
+  ✓ Task 1
+  ✓ Task 2"
+  
+  git log --oneline --graph --all         # View progress
+
+
+════════════════════════════════════════════════════════════════════
+
+COMMIT MESSAGE FORMAT:
+
+  feat: [Phase-1] Your feature title
+  
+  Detailed description:
+  - What you added
+  - Why you made this change
+  - Key implementation details
+
+
+TYPES: feat: | fix: | docs: | chore: | ci: | test:
+
+EXAMPLE:
+
+  feat: [Phase-1] Add Docker configuration
+  
+  - Create Dockerfile for Node.js services
+  - Add docker-compose.yml with PostgreSQL
+  - Configure environment variables
+
+
+════════════════════════════════════════════════════════════════════
+
+TAG CREATION:
+
+  git tag -a phase-1 -m "Phase 1 Complete: Infrastructure setup
+  
+  Completed:
+  ✓ Docker containerization
+  ✓ Project structure
+  ✓ CI/CD pipeline"
+  
+  Result: Immutable marker at this commit
+
+
+════════════════════════════════════════════════════════════════════
+
+VIEW YOUR PROGRESS:
+
+  git log --oneline              # See commits
+  git log --oneline --graph      # See commit graph
+  git log --oneline --graph --all # See all branches/tags
+  
+  git tag -l                     # List all tags
+  git show phase-1               # View tag details
+  
+  git diff phase-1 phase-2       # Compare phases
+
+
+════════════════════════════════════════════════════════════════════
+
+PROJECT PHASES:
+
+  Phase 0: ✅ Setup & Documentation (COMPLETE)
+  Phase 1: 🎯 Infrastructure (NEXT)
+     └─ Docker, project structure, CI/CD
+  
+  Phase 2: ⏳ Database Schema
+     └─ PostgreSQL, ORM, migrations
+  
+  Phase 3: ⏳ Microservices
+     └─ Auth, Users, Notes services
+  
+  Phase 4: ⏳ API Gateway
+     └─ Routing, middleware, security
+  
+  Phase 5: ⏳ Testing & CI/CD
+     └─ Full test suite, pipeline automation
+  
+  Phase 6: ⏳ Deployment
+     └─ Containerization, monitoring
+
+
+════════════════════════════════════════════════════════════════════
+
+CHECKPOINT VERIFICATION (Before tagging):
+
+  ✓ npm run lint                 # Code quality
+  ✓ npm run test                 # Tests pass
+  ✓ npm run build                # Build works
+  ✓ npm audit                    # No vulnerabilities
+  ✓ README updated               # Documentation
+  ✓ All tasks complete           # See PHASE_CHECKLIST.md
+
+
+════════════════════════════════════════════════════════════════════
+
+PHASE CHECKLIST REFERENCE:
+
+  Phase 1: Infrastructure
+    ☐ Docker configuration
+    ☐ Project structure
+    ☐ ESLint & Prettier
+    ☐ CI/CD pipeline
+    ☐ All tests pass
+    ☐ Documentation updated
+    
+  (See PHASE_CHECKLIST.md for all phases)
+
+
+════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING:
+
+  Forgot to tag?
+    git tag -a phase-1 -m "..."
+  
+  Need to change tag message?
+    git tag -d phase-1
+    git tag -a phase-1 -m "New message"
+  
+  View phase 1 code?
+    git checkout phase-1
+    git checkout master      # Back to latest
+  
+  See commits between phases?
+    git log phase-1..phase-2 --oneline
+    git diff phase-1 phase-2 --stat
+
+
+════════════════════════════════════════════════════════════════════
+
+PUSHING TO GITHUB:
+
+  git remote add origin https://github.com/YOUR_USERNAME/mini-notes
+  git push -u origin master          # Push commits
+  git push origin --tags             # Push all tags
+  git push origin phase-1            # Push single tag
+
+
+════════════════════════════════════════════════════════════════════
+
+KEY FILES:
+
+  📄 START_HERE.md ⭐              Read first (10 min)
+  📄 PHASE_WORKFLOW_QUICK_REF.md   Daily reference
+  📄 PHASE_CHECKLIST.md            Phase verification
+  📄 GIT_WORKFLOW_GUIDE.md         Complete guide
+  📄 WORKFLOW_VISUALIZATION.txt    Visual diagrams
+
+
+════════════════════════════════════════════════════════════════════
+
+REMEMBER:
+
+  ✓ Make commits after each logical unit of work
+  ✓ Format: feat: [Phase-N] Description
+  ✓ Run tests, lint, build before tagging
+  ✓ Tag when phase checkpoint passes
+  ✓ Tag message explains what was completed
+
+
+════════════════════════════════════════════════════════════════════
+
+YOU'VE GOT THIS! 🚀
+
+Questions? See documentation in your mini-notes folder.
